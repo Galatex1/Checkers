@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_dama" default="compile.module.dama">
+  <dirname property="module.dama.basedir" file="${ant.file.module_dama}"/>
+  
+  <property name="module.jdk.home.dama" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.dama" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.dama" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.dama" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="dama.output.dir" value="${module.dama.basedir}/out/production/Dama"/>
+  <property name="dama.testoutput.dir" value="${module.dama.basedir}/out/test/Dama"/>
+  
+  <path id="dama.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="dama.module.production.classpath">
+    <path refid="${module.jdk.classpath.dama}"/>
+  </path>
+  
+  <path id="dama.runtime.production.module.classpath">
+    <pathelement location="${dama.output.dir}"/>
+  </path>
+  
+  <path id="dama.module.classpath">
+    <path refid="${module.jdk.classpath.dama}"/>
+    <pathelement location="${dama.output.dir}"/>
+  </path>
+  
+  <path id="dama.runtime.module.classpath">
+    <pathelement location="${dama.testoutput.dir}"/>
+    <pathelement location="${dama.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.dama">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.dama">
+    <patternset refid="excluded.from.module.dama"/>
+  </patternset>
+  
+  <path id="dama.module.sourcepath">
+    <dirset dir="${module.dama.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.dama" depends="compile.module.dama.production,compile.module.dama.tests" description="Compile module Dama"/>
+  
+  <target name="compile.module.dama.production" depends="register.custom.compilers" description="Compile module Dama; production classes">
+    <mkdir dir="${dama.output.dir}"/>
+    <javac2 destdir="${dama.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.dama}/javac">
+      <compilerarg line="${compiler.args.dama}"/>
+      <bootclasspath refid="dama.module.bootclasspath"/>
+      <classpath refid="dama.module.production.classpath"/>
+      <src refid="dama.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.dama"/>
+    </javac2>
+    
+    <copy todir="${dama.output.dir}">
+      <fileset dir="${module.dama.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.dama.tests" depends="register.custom.compilers,compile.module.dama.production" description="compile module Dama; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.dama" description="cleanup module">
+    <delete dir="${dama.output.dir}"/>
+    <delete dir="${dama.testoutput.dir}"/>
+  </target>
+</project>

@@ -1,0 +1,5 @@
+<root>
+  <item name='javax.xml.parsers.DocumentBuilder'>
+    <annotation name='org.jetbrains.annotations.Nullable'/>
+  </item>
+</root>
