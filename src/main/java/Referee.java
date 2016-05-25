@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static java.lang.Math.abs;
+
 /**
  * Created by Galatex on 16.5.2016.
  */
@@ -359,38 +361,98 @@ class Referee
             }
     }
 
-    Point[] getPreviousPoint(List<Point[]> pos, Point p)
+    List<Point[]> getPreviousPoints(List<Point[]> pos, Point p)
     {
+        List<Point[]> ppp = new ArrayList<>();
         for(Point[] po : pos)
         {
             if(po[1].equals(p))
-                return po;
+                ppp.add(po);
         }
-        Point[] ppp = {};
+
 
         return ppp;
     }
 
-    public List<Point[]> getPath(Figure f,  Point _start, Point _end)
+    List<Path> path = new ArrayList<>();
+    List<Point[]> pos = new ArrayList<>();
+    Path _pt = new  Path();
+
+    public List<Path> getPath(Figure f,  Point _start, Point _end)
     {
-        List<Point[]> pos = checkJump(f,_start);
+        if(pos.size()==0)
+         pos = checkJump(f,_start);
+
         Point p = _end;
-        Point[] po = getPreviousPoint(pos,p);
+        List<Point[]> po = getPreviousPoints(pos,p);
 
-        List<Point[]> path = new ArrayList<>();
-
-        while(!(po[0]).equals( _start))
+        for(int i = 0; i < po.size(); i++ /*Point[] pp : po*/ )
         {
-            path.add(po);
-            p = po[0];
-            po = getPreviousPoint(pos, p);
+            _pt.add(po.get(i));
 
+            getPath(f,_start, po.get(i)[0]);
+
+            path.add(_pt);
+            _pt = new Path();
         }
-        path.add(po);
+
+        for( int i = 0; i < path.size(); i++)
+        {
+            if(path.get(i).path_value==0 && path.get(i).path.size()==0)
+            {
+                path.remove(i);
+            }
+        }
 
         return path;
     }
 
+    List<Figure> getFigures(boolean player)
+    {
+        List<Figure> figures = new ArrayList<>();
+
+        for(Figure[] fig : Manager.ref.board.figures)
+        {
+            for(Figure f : fig)
+            {
+                if(f.playerSelect.getBool() == player)
+                {
+                    figures.add(f);
+                }
+            }
+        }
+
+        return figures;
+    }
+
+    List<Point[]> getPossibleMoves( List<Figure> p_figs)
+    {
+        List<Point[]> list = Manager.ref.getForcedMoves();
+        if(list.size() > 0)
+            return list;
+        else
+        {
+            for(Figure f: p_figs)
+            {
+                for(Point p : Manager.ref.checkPositions(f))
+                {
+                    list.add(new Point[]{f.position,p});
+                }
+            }
+        }
+
+        return  list;
+    }
+
+
+    MoveValue getMoveValue(Point[] _move)
+    {
+        MoveValue mV = new MoveValue(_move,0);
+
+        mV.value = abs(abs(_move[0].x) - abs(_move[1].x));
+
+        return mV;
+    }
 
      boolean ownerTurn(Figure f)
     {

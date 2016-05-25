@@ -214,23 +214,40 @@ public class RefereeTest
     @Test
     public void testGetPath(){
 
-        Manager.man.loadSave(control_save);
 
-        Figure f = Manager.ref.board.figures[4][2];
+        String[] save = {"1, 108",
+                "0, 0, 6, 2",
+                "0, 0, 6, 4",
+                "0, 0, 4, 2",
+                "0, 0, 4, 4",
+                "0, 0, 2, 2",
+                "0, 0, 4, 6",
+                "0, 0, 2, 6",
+                "0, 0, 3, 7",
+                "1, 0, 7, 3"};
+        Manager.man.loadSave();
 
-         List<Point[]> list = Manager.ref.getPath(f, f.position, new Point(0,2));
+        Figure f = Manager.ref.board.figures[7][3];
 
-        for(Point[] po : list)
+         List<Path> list = Manager.ref.getPath(f, f.position, new Point(1,1));
+
+        String values_expected = "(2,4),(0,2), (4,2),(2,4), (2,0),(0,2), (4,2),(2,0), ";
+
+        String values_actual = "";
+
+        System.out.println(list.size());
+        for(Path path : list)
         {
-            System.out.println("("+po[0].x+", "+po[0].y+") "+"("+po[1].x+", "+po[1].y+")");
+            for(MoveValue m : path.path)
+            {
+                values_actual += "("+m.move_start.x+","+m.move_start.y+"),("+m.move_end.x+","+m.move_end.y+"), ";
+            }
+            values_actual += "****";
         }
 
+       // Assert.assertEquals("list should contain 2 paths", 2, list.size());
 
-        Assert.assertTrue(" Function didn't return right list of paths", (/*Manager.ref.listContainsPoint(list, new Point[]{new Point(4, 2), new Point(2, 0)})
-                &&*/ Manager.ref.listContainsPoint(list, new Point[]{new Point(2, 4), new Point(0, 2)})
-                && Manager.ref.listContainsPoint(list, new Point[]{new Point(4, 2), new Point(2, 4)})
-                //&& Manager.ref.listContainsPoint(list, new Point[]{new Point(2, 4), new Point(0, 2)})
-        ));
+        Assert.assertEquals("String of values should be Equal", values_expected, values_actual);
     }
 
     @After
