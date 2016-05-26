@@ -15,9 +15,9 @@ public class Path
             path.add(m);
             path_value += m.value;
         }
-    };
+    }
 
-    Path(){};
+    Path(){}
 
     void add(Point[] p){
         MoveValue m = Manager.ref.getMoveValue(p);
@@ -26,6 +26,10 @@ public class Path
     }
 
     void clear(){path.clear();path_value = 0;}
+
+    void remove(int index){path_value -= path.get(index).value;path.remove(index);}
+
+    int size(){return path.size();}
 
     List<MoveValue> path = new ArrayList<>();
     int path_value = 0;

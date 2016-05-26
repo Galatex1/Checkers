@@ -1,4 +1,7 @@
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -212,6 +215,24 @@ public class RefereeTest
     }
 
     @Test
+    public void testGetPreviousPoints()
+    {
+
+        List<Point[]> list = new ArrayList<Point[]>() {{
+        add(new Point[]{ new Point(2, 0),  new Point(4, 2)});
+        add(new Point[]{new Point(2, 4), new Point(2, 0)});
+        add(new Point[]{new Point(2, 6), new Point(2, 0)});
+    }};
+
+        List<Point[]> _list = Manager.ref.getPreviousPoints(list, new Point(4, 2));
+
+        String values_expected = "";
+        String values_actual = "";
+        Assert.assertEquals("String of values should be Equal", values_expected, values_actual);
+
+    }
+
+    @Test
     public void testGetPath(){
 
 
@@ -221,33 +242,82 @@ public class RefereeTest
                 "0, 0, 4, 2",
                 "0, 0, 4, 4",
                 "0, 0, 2, 2",
+                "0, 0, 2, 4",
                 "0, 0, 4, 6",
                 "0, 0, 2, 6",
-                "0, 0, 3, 7",
-                "1, 0, 7, 3"};
-        Manager.man.loadSave();
+                "1, 0, 3, 3"};
+        Manager.man.loadSave(save);
 
-        Figure f = Manager.ref.board.figures[7][3];
+        Figure f = Manager.ref.board.figures[3][3];
 
-         List<Path> list = Manager.ref.getPath(f, f.position, new Point(1,1));
+         List<Path> list = Manager.ref.getPath(f, f.position, new Point(7,3));
 
-        String values_expected = "(2,4),(0,2), (4,2),(2,4), (2,0),(0,2), (4,2),(2,0), ";
+        String values_expected = "(3,7),(1,5), (5,5),(3,7), (7,3),(5,5), (3,3),(1,5), (5,5),(3,3), (7,3),(5,5), (3,3),(1,5), (5,1),(3,3), (7,3),(5,1), ";
 
         String values_actual = "";
 
-        System.out.println(list.size());
         for(Path path : list)
         {
             for(MoveValue m : path.path)
             {
                 values_actual += "("+m.move_start.x+","+m.move_start.y+"),("+m.move_end.x+","+m.move_end.y+"), ";
             }
-            values_actual += "****";
         }
 
        // Assert.assertEquals("list should contain 2 paths", 2, list.size());
 
         Assert.assertEquals("String of values should be Equal", values_expected, values_actual);
+    }
+
+    @Test
+    public void testGetFigures()
+    {
+        Manager.man.newGame();
+
+        List<Figure> list =  Manager.ref.getFigures(false);
+
+        String values_actual = "";
+        String values_expected = "(0,0), (0,2), (0,4), (0,6), (1,1), (1,3), (1,5), (1,7), (2,0), (2,2), (2,4), (2,6), ";
+
+        for(Figure p : list)
+        {
+            values_actual += "("+p.position.x+","+p.position.y+"), ";
+        }
+
+        Assert.assertEquals("String of values should be Equal", values_expected, values_actual);
+    }
+
+    @Test
+    public void testGetPossibleMoves()
+    {
+        Manager.man.newGame();
+
+        List<Point[]> list =  Manager.ref.getPossibleMoves(Manager.ref.getFigures(false));
+
+        String values_actual = "";
+        String values_expected = "(2,0),(3,1), (2,2),(3,3), (2,2),(3,1), (2,4),(3,5), (2,4),(3,3), (2,6),(3,7), (2,6),(3,5), ";
+
+        for(Point[] p : list)
+        {
+            values_actual += "("+p[0].x+","+p[0].y+"),("+p[1].x+","+p[1].y+"), ";
+        }
+
+        Assert.assertEquals("String of values should be Equal", values_expected, values_actual);
+
+        Manager.man.loadSave(control_save);
+
+        list =  Manager.ref.getPossibleMoves(Manager.ref.getFigures(false));
+
+        values_actual = "";
+        values_expected = "(4,2),(2,4), (4,2),(2,0), (4,4),(2,6), (4,4),(2,2), ";
+
+        for(Point[] p : list)
+        {
+            values_actual += "("+p[0].x+","+p[0].y+"),("+p[1].x+","+p[1].y+"), ";
+        }
+
+        Assert.assertEquals("String of values should be Equal", values_expected, values_actual);
+
     }
 
     @After

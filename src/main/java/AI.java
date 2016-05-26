@@ -1,8 +1,5 @@
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.lang.Math.abs;
 
 /**
  * Created by Galatex on 25.5.2016.
@@ -15,9 +12,16 @@ public class AI
 
     AI(){
 
+        figures_AI = Manager.ref.getFigures(false);
+        figures_PL = Manager.ref.getFigures(true);
     };
 
     void simulateTurn(){
+
+        Board board = new Board();
+
+        Manager.ref.getPossibleMoves(figures_AI);
+        //if()
 
     }
 

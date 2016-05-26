@@ -1,9 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import static java.lang.Math.abs;
 
@@ -383,28 +382,39 @@ class Referee
         if(pos.size()==0)
          pos = checkJump(f,_start);
 
-        Point p = _end;
-        List<Point[]> po = getPreviousPoints(pos,p);
+        List<Path> array = path;
+
+        //Point p = _end;
+        List<Point[]> po = getPreviousPoints(pos, _end);
 
         for(int i = 0; i < po.size(); i++ /*Point[] pp : po*/ )
         {
             _pt.add(po.get(i));
 
             getPath(f,_start, po.get(i)[0]);
-
-            path.add(_pt);
-            _pt = new Path();
         }
+        if(po.size()==0)
+        {
+            Path pth = new Path();
+            pth.path_value = _pt.path_value;
+            for(MoveValue m : _pt.path)
+            {
+                pth.add(new Point[]{new Point(m.move_start.x,m.move_start.y),new Point(m.move_end.x,m.move_end.y)}  );
+            }
+            path.add(pth);
+        }
+        if(_pt.size()>0)
+            _pt.remove(_pt.size()-1);
 
-        for( int i = 0; i < path.size(); i++)
+       /* for( int i = 0; i < path.size(); i++)
         {
             if(path.get(i).path_value==0 && path.get(i).path.size()==0)
             {
                 path.remove(i);
             }
-        }
+        }*/
 
-        return path;
+        return array;
     }
 
     List<Figure> getFigures(boolean player)
@@ -415,7 +425,7 @@ class Referee
         {
             for(Figure f : fig)
             {
-                if(f.playerSelect.getBool() == player)
+                if(f!=null && f.playerSelect.getBool() == player)
                 {
                     figures.add(f);
                 }
@@ -507,6 +517,12 @@ class Referee
     void switchPlayers(boolean current)
     {
         player_turn = !current;
+
+        if(getPossibleMoves(getFigures(!current)).size() == 0)
+        {
+            JOptionPane.showMessageDialog(Manager.frame, "Player can't do any valid move. Player X wins!", "Congratulation!", JOptionPane.INFORMATION_MESSAGE);
+        }
+
         turn_time = 120;
         Manager.man.switchPlayers();
         clicked.clear();
