@@ -181,7 +181,7 @@ public class RefereeTest
         Assert.assertTrue("Function didn't return right list of posible moves", (Manager.ref.listContainsPoint(listpos, new Point(3,1)) && Manager.ref.listContainsPoint(listpos, new Point(3,3))));
     }
 
-    @Test
+    /*@Test
     public void testCheckJump()
     {
         Manager.man.loadSave(control_save);
@@ -201,6 +201,39 @@ public class RefereeTest
         ));
 
 
+    }*/
+
+    @Test
+    public void testCheckJump()
+    {
+
+        String[] save = {"1, 108",
+                "0, 0, 6, 2",
+                "0, 0, 6, 4",
+                "0, 0, 4, 2",
+                "0, 0, 4, 4",
+                "0, 0, 2, 2",
+                "0, 0, 2, 4",
+                "0, 0, 4, 6",
+                "0, 0, 2, 6",
+                "1, 1, 3, 3"};
+
+        Manager.man.loadSave(save);
+        List<Point[]> listp = Manager.ref.checkJump(Manager.ref.board.figures[3][3], Manager.ref.board.figures[3][3].position);
+
+
+
+        String values_exp = "(3,3),(5,5), (5,5),(3,3), (5,5),(7,3), (7,3),(5,5), (7,3),(5,1), (5,1),(7,3), (5,5),(3,7), (3,7),(5,5), (3,7),(1,5), (1,5),(3,7), (3,3),(5,1), (5,1),(3,3), (3,3),(1,5), (1,5),(3,3), (3,3),(1,1), (1,1),(3,3), ";
+        String values_real = "";
+
+        for(Point[] p : listp)
+        {
+
+            values_real += "("+p[0].x+","+p[0].y+"),("+p[1].x+","+p[1].y+"), ";
+
+        }
+
+            Assert.assertEquals("String should be equal", values_exp, values_real);
     }
 
     @Test
@@ -232,7 +265,7 @@ public class RefereeTest
 
     }
 
-    @Test
+    /*@Test
     public void testGetPath(){
 
 
@@ -245,7 +278,7 @@ public class RefereeTest
                 "0, 0, 2, 4",
                 "0, 0, 4, 6",
                 "0, 0, 2, 6",
-                "1, 0, 3, 3"};
+                "1, 1, 3, 3"};
         Manager.man.loadSave(save);
 
         Figure f = Manager.ref.board.figures[3][3];
@@ -267,7 +300,7 @@ public class RefereeTest
        // Assert.assertEquals("list should contain 2 paths", 2, list.size());
 
         Assert.assertEquals("String of values should be Equal", values_expected, values_actual);
-    }
+    }*/
 
     @Test
     public void testGetFigures()

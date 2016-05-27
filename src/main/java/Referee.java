@@ -354,6 +354,8 @@ class Referee
                         if(!listContainsPoint(array, new Point[]{_start, check1}) && !listContainsPoint(array, new Point[]{check1, _start}))
                         {
                             array.add(new Point[]{_start, check1});
+                            if(f.state)
+                                array.add(new Point[]{check1,_start});
                             cJ(f, check1);
                         }
                     }
@@ -379,19 +381,29 @@ class Referee
 
     public List<Path> getPath(Figure f,  Point _start, Point _end)
     {
-        if(pos.size()==0)
-         pos = checkJump(f,_start);
+        return getPath(f, _start, _end, board);
+    }
 
-        List<Path> array = path;
+    public List<Path> getPath(Figure f,  Point _start, Point _end, Board _board)
+    {
+
+        Board _b = new Board(_board.figures);
+
+        if(pos.size()==0)
+            pos = checkJump(f, _start);
+
 
         //Point p = _end;
         List<Point[]> po = getPreviousPoints(pos, _end);
 
         for(int i = 0; i < po.size(); i++ /*Point[] pp : po*/ )
         {
-            _pt.add(po.get(i));
-
-            getPath(f,_start, po.get(i)[0]);
+            if(_b.getFigure(new Point((po.get(i)[0].x+po.get(i)[1].x)/2,(po.get(i)[0].y+po.get(i)[1].y)/2)) != null )
+            {
+                _b.figures[(po.get(i)[0].x+po.get(i)[1].x)/2][(po.get(i)[0].y+po.get(i)[1].y)/2] = null;
+                _pt.add(po.get(i));
+                getPath(f, _start, po.get(i)[0], _b);
+            }
         }
         if(po.size()==0)
         {
@@ -414,7 +426,7 @@ class Referee
             }
         }*/
 
-        return array;
+        return path;
     }
 
     List<Figure> getFigures(boolean player)

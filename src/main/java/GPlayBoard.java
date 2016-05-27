@@ -9,7 +9,7 @@ import java.net.MalformedURLException;
 import java.util.*;
 
 /**
- * Graficka reprezentace panelu s deskou
+ * Graphical panel with board
  *
  * @author Michal Vytrhlik (05/03/2016 14:24)
  * Prepracoval Galatex 20/5/2016

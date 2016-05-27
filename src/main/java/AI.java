@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +21,19 @@ public class AI
 
         Board board = new Board();
 
-        Manager.ref.getPossibleMoves(figures_AI);
-        //if()
+        List<Point[]> list = Manager.ref.getPossibleMoves(figures_AI);
+        MoveValue best_move = new MoveValue(new Point[]{},0);
+
+        if(list.size()!=0)
+        {
+            for(Point[] p : list)
+            {
+                MoveValue mv = Manager.ref.getMoveValue(p);
+                if(mv.value > best_move.value)
+                    best_move = mv;
+            }
+
+        }
 
     }
 
